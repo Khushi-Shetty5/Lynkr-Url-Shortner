@@ -2,7 +2,7 @@
 import { nanoid } from 'nanoid';
 
 import URL from '../model/url.js';
-export default async function methodGetShortUrls(req,res)
+async function methodGetShortUrls(req,res)
 {
    const body=req.body;
    if(!body.url)
@@ -17,4 +17,11 @@ export default async function methodGetShortUrls(req,res)
    return res.json({id:shortID})
 }
 
-// export default { methodGetShortUrl,};
+
+async function methodGetAnalytics(req,res)
+{
+   const shortId=req.params.shortId;
+    const result=await URL.findOne({shortId});
+    return res.json({totalClicks:result.visitedHistory.length, analytics:result.visitedHistory,});
+}
+export {methodGetShortUrls,methodGetAnalytics};
