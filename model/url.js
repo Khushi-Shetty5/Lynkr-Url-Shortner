@@ -1,24 +1,28 @@
-import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 
 
-const urlSchema=new Schema({
+const urlSchema=new mongoose.Schema({
     shortId:{
         type:String,
         required:true,
         unique:true,
     },
-    redirectUrl:{
+    redirectURL:{
         type:String,
         required:true,
     },
     visitedHistory:[{timestamp:{
         type:Number,
     }}],
+    createdBy:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"users", 
+    }
 
 },{
     timestamps:true,
 });
 
-const URL=model('url',urlSchema);
+const URL=mongoose.model('url',urlSchema);
 
 export default URL;
