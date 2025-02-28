@@ -5,13 +5,15 @@ dotenv.config();
 const secret=process.env.secret_key;
 function setUser(user)
 {
-
+    const options = {
+        expiresIn: '1h', 
+    };
     return jwt.sign(
         {
-        _id:user.id,
+        _id:user._id,
         email:user.email,
         role:user.role,
-    },secret);
+    },secret,options);
 }
 function getUser(token)
 {
@@ -21,6 +23,7 @@ function getUser(token)
         return jwt.verify(token,secret);
     }catch(error)
     {
+        console.error("Token verification failed:", error);
         return null;
     }
     

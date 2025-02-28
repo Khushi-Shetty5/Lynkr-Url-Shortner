@@ -20,7 +20,7 @@ app.set('views',path.resolve("./views"));
 connectToMongo(MONGO_URL).then(()=>console.log("mongodb connected"));
 
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(checkForAuthentication);
 

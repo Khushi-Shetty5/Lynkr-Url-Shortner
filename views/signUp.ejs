@@ -18,7 +18,12 @@
       <label>Email</label>
       <input type="text" required name="email" />
       <label>Password</label>
-      <input type="text" required name="password" />
+      <input type="password" required name="password" />
+      <div>
+        <% if (error) { %>
+            <p style="color: red;"><%= error %></p>
+        <% } %>
+    </div>
       <button type="submit">Sign Up</button>
     </form>
   </body>
