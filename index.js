@@ -11,13 +11,13 @@ import { checkForAuthentication,restrictTo} from "./middlewares/auth.js";
 dotenv.config();
 const app=express(); 
 const PORT = process.env.PORT || 8001;  
-const MONGO_URL = process.env.MONGO_URL;
-
+const MONGO_URI = process.env.MONGO_URI;
+// console.log(MONGO_URI);
 app.set("view engine","ejs");
 app.set('views',path.resolve("./views"));
 
 
-connectToMongo(MONGO_URL).then(()=>console.log("mongodb connected"));
+connectToMongo(MONGO_URI);
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));

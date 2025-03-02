@@ -28,4 +28,8 @@ function getUser(token)
     }
     
 }
-export {setUser,getUser};
+function logout(req, res) {
+    res.clearCookie('token'); // 'token' is the name of the cookie where JWT is stored
+    return res.redirect('/login'); // Redirect to login page or home page
+ }
+export {setUser,getUser,logout};
