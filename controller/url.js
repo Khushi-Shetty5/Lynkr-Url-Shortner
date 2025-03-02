@@ -12,8 +12,8 @@ async function handleGenerateNewShortURL(req,res)
 
 
     let shortID = nanoid(8);
-    let urlExists = await URL.findOne({ shortId: shortID });
-    while (urlExists) {
+    let shortIdExists = await URL.findOne({ shortId: shortID });
+    while (shortIdExists) {
       shortID = nanoid(8);
       urlExists = await URL.findOne({ shortId: shortID });
     }
@@ -22,21 +22,43 @@ async function handleGenerateNewShortURL(req,res)
     shortId:shortID,
     redirectURL:body.url,
     visitedHistory:[],
-    createdBy:req.user._id,
+    createdBy:req.user?req.user._id :null,
    });
-   return res.render("home",{id:shortID,})
+   const urls = await URL.find({ createdBy: req.user ? req.user._id : null });
+   return res.render("home",{id:shortID,urls})
 }
 
 
-async function methodGetAnalytics(req,res)
-{
-   const shortId=req.params.shortId;
-    const result=await URL.findOne({shortId});
-    if (!result) {
-      return res.status(404).json({ error: "URL not found" });
+async function methodGetAnalytics(req, res) {
+   try {
+      //  console.log("Analytics function called"); // Debugging
+
+       const shortId = req.params.shortId;
+      //  console.log("Short ID:", shortId); // Debugging
+
+       const result = await URL.findOne({ shortId });
+
+       if (!result) {
+         //   console.log("URL not found"); // Debugging
+           return res.status(404).send("<h2>URL not found</h2>");
+       }
+
+      //  console.log("Visited History Data:", result.visitedHistory);
+
+      //  console.log("Rendering analytics page..."); // Debugging
+
+       return res.render("analytics", {
+           shortId: result.shortId,
+           totalClicks: result.visitedHistory.length,
+           analytics: result.visitedHistory,
+         // analytics: [],
+       });
+   } catch (error) {
+      //  console.error("Error fetching analytics:", error); // Debugging
+       return res.status(500).send("<h2>Internal Server Error</h2>");
    }
-    return res.json({totalClicks:result.visitedHistory.length, analytics:result.visitedHistory,});
 }
+
 async function methodRouteUrl(req,res){
    
       const shortId=req.params.shortId;

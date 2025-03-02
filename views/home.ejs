@@ -5,50 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
     <style>
-        body{
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
 </head>
 <body>
-    
-   <h1>
-    URL SHORTNER SERVICE
-   </h1>
+
+   <h1>URL SHORTENER SERVICE</h1>
+   <form id="logoutForm" action="/logout" method="POST">
+    <button type="submit">Logout</button>
+ </form>
+
    <% if (locals.id) { %>
-    <p>URL Generated: http://localhost:8001/url/<%= id %></p>
+        <h2>Short URL Generated:</h2>
+        <p>
+            <a href="http://localhost:5001/url/<%= id %>" target="_blank">
+                http://localhost:5001/url/<%= id %>
+            </a>
+            <button onclick="copyToClipboard()">Copy</button>
+        </p>
    <% } %>
+
    <div>
     <form method="POST" action="/url">
-        <label >Enter your original URL:  </label>
-        <input type="text" placeholder="https://example.com" name="url">
+        <label>Enter your original URL: </label>
+        <input type="text" placeholder="https://example.com" name="url" required>
         <br>
-       
         <button type="submit">Generate</button>
     </form>
    </div>
+
    <div>
-    <% if (locals.urls) { %>
-     <table>
+    <% if (locals.urls && locals.urls.length > 0) { %>
+     <h2>Your Shortened URLs</h2>
+     <table border="1">
         <thead>
-            <th>SL.NO</th>
-            <th>SHORT ID</th>
-            <th>REDIRECT</th>
-            <th>CLICKS</th>
+            <tr>
+                <th>SL.NO</th>
+                <th>SHORT ID</th>
+                <th>REDIRECT</th>
+                <th>CLICKS</th>
+                <th>Analytics</th>
+            </tr>
         </thead>
         <tbody>
-            
-          <% urls.forEach((url,index)=> { %>
+          <% urls.forEach((url, index) => { %>
             <tr>
-           <td><%= index+1 %></td>
-           <td><%= url.shortId%></td>
-           <td><%= url.redirectURL %></td>
-           <td><%= url.visitedHistory.length %></td>
-        </tr>
+                <td><%= index + 1 %></td>
+                <td><%= url.shortId %></td>
+                <td><%= url.redirectURL %></td>
+                <td><%= url.visitedHistory.length %></td>
+                <td><a href="http://localhost:5001/url/analytics/<%= url.shortId %>">View Analytics</a></td>
+            </tr>
           <% }) %>
         </tbody>
      </table>
+    <% } else { %>
+        <p>No URLs created yet.</p>
     <% } %>
    </div>
+
+   <script>
+    function copyToClipboard() {
+        var shortUrl = document.querySelector("a[href^='http://localhost:5001/url/']").innerText;
+        navigator.clipboard.writeText(shortUrl).then(() => {
+            alert("Copied to clipboard!");
+        });
+    }
+   </script>
+
 </body>
 </html>
